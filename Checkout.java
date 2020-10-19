@@ -2,9 +2,9 @@ import java.util.ArrayList;
 
 public class Checkout {
 
-    protected final Rule[] pricingRules;
+    private final Rule[] pricingRules;
 
-    protected ArrayList<Item> items = new ArrayList<>();
+    private ArrayList<Item> items = new ArrayList<>();
 
     public Checkout(final Rule[] rules) {
         pricingRules = rules;
@@ -30,7 +30,7 @@ public class Checkout {
      * multiply by the corresponding price. If the checkout doesn't have a discount
      * for this item, return the quantity times the price of the item.
      */
-    private float evaluateItem(final Item item, final int quantity) {
+    private int evaluateItem(final Item item, final int quantity) {
         for (final Rule rule : pricingRules) {
             if (rule.item.compareTo(item) == 0) {
                 final int quantityNoDiscount = quantity % rule.quantity;
@@ -42,11 +42,12 @@ public class Checkout {
     }
 
     // Iterating over the items and evaluating the total price of the purchase.
-    public float evaluateTotal() {
-        // Variable to count the quantity of type of item.
-        int itemCounter = 0;
+    public int evaluateTotal() {
+        // Variable to count the quantity of type of item. Starts with one, representing
+        // the first item on the list.
+        int itemCounter = 1;
 
-        float totalPrice = 0;
+        int totalPrice = 0;
 
         // initializing the object in order for the final evaluation to not throw an
         // error.
@@ -57,14 +58,7 @@ public class Checkout {
         // the size of the array is calculated once before the loop, instead of every
         // iteration, to increase performance.
         final int totalQuantity = items.size();
-        for (int i = 0; i < totalQuantity; i++) {
-
-            // We can't compare the first item to items before to we only increment the
-            // counter and continue to the next item.
-            if (i == 0) {
-                itemCounter++;
-                continue;
-            }
+        for (int i = 1; i < totalQuantity; i++) {
 
             // Getting the current and previous items to compare.
             currentItem = items.get(i);
